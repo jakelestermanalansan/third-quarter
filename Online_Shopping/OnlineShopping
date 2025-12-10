@@ -1,0 +1,118 @@
+let products = [
+    { name: "Laptop", price: 35000, category: "Electronics" },
+    {name: "Headphones", price: 1500, category: "Accessories"},
+    { name: "Mouse", price: 500, category: "Accessories" },
+    {name: "Phone", price: 20000, category: "Electronics" },
+    { name: "USB Cable", price: 150, category: "Accessories" },
+    {name: "Smart Watch", price: 5000, category: "Electronics" }
+];
+products.sort(function(a, b) {
+return a.price - b.price;
+});
+products.forEach(function(product, index) {
+    console.log(index + ": " + product.name, "- P" +  
+        product.price + " (" + product.category + ")");
+});
+let cart = [];
+function addToCart(productName) {
+    let found = false;
+    for (let i = 0; i < products.length; i++) {
+        if (products[i].name === productName) {
+            cart.push(products[i]);
+            console.log(productName + " Added to the Cart!.");
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        console.log(productName + " Product not found.");
+    }
+}
+addToCart("Laptop");
+addToCart("Mouse");
+addToCart("Phone");
+
+function removeLastItem() {
+    if (cart.length > 0) {
+        let removed = cart.pop();
+        console.log(removed.name + " removed from Cart.");
+    } else {
+        console.log("Cart is empty!");
+    }
+}
+function removeFirstItem() {
+    if (cart.length > 0) {
+        let removed = cart.shift();
+        console.log(removed.name + " removed from Cart.");
+    } else {
+        console.log("Cart is empty!");
+    }
+}
+function showCart() {
+    console.log("=== Cart (" + cart.length + " items) ===");
+    cart.forEach(function(item, index) {
+        console.log(index + ": " + item.name + " - P" + item.price);
+    });
+}
+function getTotalPrice() {
+    return cart.reduce(function(sum, item) {
+        return sum + item.price;
+    }, 0);
+}
+console.log("Total Price: P" + getTotalPrice());
+removeLastItem();
+showCart();
+console.log("Total Price: P" + getTotalPrice());
+function getElectronicsItems() {
+    return cart.filter(function(item) {
+        return item.category === "Electronics";
+    });
+}
+console.log("Electronics Items in Cart:", getElectronicsItems());
+
+function applyDiscount(cart, discountPercent) {
+    return cart.map(function(item) {
+        return {
+            name: item.name,
+            originalPrice: item.price,
+            discountedPrice: item.price * (1 - discountPercent / 100),
+        };
+    });
+}
+
+function checkout() {
+    let total = getTotalPrice();
+    console.log("Original Total: P" + total);
+    if (total > 20000) {
+        let discounted = applyDiscount(cart, 10);
+        let discountedTotal = discounted.reduce(function(sum, item) {
+            return sum + item.discountedPrice;
+        }, 0);
+        console.log("Discounted applied New Total: P" + discountedTotal.toFixed(2));
+    } else {
+        console.log("No discount Total: P" + total);
+    }
+}
+checkout();
+function removeItemByName(productName) {
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].name === productName) {
+            cart.splice(i, 1);
+            console.log(productName + " removed!");
+            return;
+        }
+    }
+    console.log("Item not found in cart!");
+}
+addToCart("Headphones");
+removeItemByName ("Mouse");
+showCart();
+cart = []; 
+addToCart ("Laptop");
+addToCart("Smart Watch");
+addToCart("USB Cable");
+addToCart("Headphones");
+showCart();
+checkout();
+removeItemByName ("USB Cable");
+showCart();
